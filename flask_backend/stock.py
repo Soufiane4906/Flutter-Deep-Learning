@@ -7,7 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 app = Flask(__name__)
 
 # Load the TensorFlow Lite model
-interpreter = tf.lite.Interpreter(model_path=r"C:\Users\HP\Documents\DeepLearning\flutter\flutter_project\assets\models\stock_prediction_model.tflite")
+interpreter = tf.lite.Interpreter(model_path=r"D:\5IIR\flutter_project\assets\models\stock_prediction_model.tflite")
 
 # Allocate tensors (this is necessary to initialize the interpreter)
 interpreter.allocate_tensors()

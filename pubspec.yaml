@@ -38,3 +38,4 @@ flutter:
       - assets/models/cnn_model.tflite
       - assets/models/ann_model.tflite
       - assets/images/download.jpeg
+      - .env

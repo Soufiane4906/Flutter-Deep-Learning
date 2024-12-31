@@ -33,8 +33,7 @@ class AnnPageState extends State<AnnPage> {
       return;
     }
 
-    final Uri uri = Uri.parse('http://192.168.1.215:5000/classify_ann'); // Flask server URL
-
+    final Uri uri = Uri.parse('http://20.30.0.212:5000/classify_ann');
     try {
       final request = http.MultipartRequest('POST', uri);
       request.files.add(http.MultipartFile.fromBytes(

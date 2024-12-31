@@ -10,12 +10,12 @@ void main() async {
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
-            apiKey: "AIzaSyCH4BgrQpS_7HOBjjNNWMMe4gEYvz-hKro",
-            authDomain: "flutter-project-a4236.firebaseapp.com",
-            projectId: "flutter-project-a4236",
-            storageBucket: "flutter-project-a4236.firebasestorage.app",
-            messagingSenderId: "599370555753",
-            appId: "1:599370555753:web:c868496d798a025aae9df8"));
+            apiKey: 'AIzaSyAr5m5MRNgNHMjG9-eH997z-KEoGb8oHeY',
+            appId: '1:309638807640:web:22a38fcc2ea0fcab568a2d',
+            messagingSenderId: '309638807640',
+            projectId: 'flutterproject-5305a',
+            authDomain: 'flutterproject-5305a.firebaseapp.com',
+            storageBucket: 'flutterproject-5305a.firebasestorage.app'));
   } else {
     await Firebase.initializeApp();
   }
