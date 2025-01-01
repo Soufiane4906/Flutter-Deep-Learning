@@ -39,22 +39,14 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-
-      User? user = userCredential.user;
-
+      User? user = await _auth.createUserWithEmailAndPassword(email, password, name);
       if (user != null) {
-        await user.updateDisplayName(name);
-        await user.reload();
-        user = FirebaseAuth.instance.currentUser;
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (_) => HomePage(
-              name: user?.displayName ?? "User Name",
-              email: user?.email ?? "user@example.com",
+              name: name,
+              email: email,
             ),
           ),
         );
@@ -91,7 +83,6 @@ class _SignUpPageState extends State<SignUpPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Name Field
               TextField(
                 controller: _name,
                 decoration: InputDecoration(
@@ -105,7 +96,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Email Field
               TextField(
                 controller: _email,
                 decoration: InputDecoration(
@@ -120,7 +110,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16),
-              // Password Field
               TextField(
                 controller: _password,
                 decoration: InputDecoration(
@@ -135,7 +124,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 obscureText: true,
               ),
               const SizedBox(height: 16),
-              // Error Message
               if (errorMessage.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
@@ -144,11 +132,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     style: const TextStyle(color: Colors.red, fontSize: 14),
                   ),
                 ),
-              // Sign Up Button
               ElevatedButton(
                 onPressed: _signUp,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple.shade400, // Set background color
+                  backgroundColor: Colors.deepPurple.shade400,
                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
