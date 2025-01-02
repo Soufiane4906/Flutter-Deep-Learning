@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../auth_service.dart';
 import 'home_page.dart';
+import 'login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -76,76 +77,127 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Sign Up'), backgroundColor: Colors.deepPurple.shade100),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: _name,
-                decoration: InputDecoration(
-                  labelText: 'Full Name',
-                  hintText: 'Enter your full name',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.deepPurple),
-                  ),
-                  prefixIcon: const Icon(Icons.person, color: Colors.deepPurple),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.purple, Colors.black],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _email,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'Enter your email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.deepPurple),
-                  ),
-                  prefixIcon: const Icon(Icons.email, color: Colors.deepPurple),
-                ),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _password,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Enter your password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.deepPurple),
-                  ),
-                  prefixIcon: const Icon(Icons.lock, color: Colors.deepPurple),
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 16),
-              if (errorMessage.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(
-                    errorMessage,
-                    style: const TextStyle(color: Colors.red, fontSize: 14),
-                  ),
-                ),
-              ElevatedButton(
-                onPressed: _signUp,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple.shade400,
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text('Sign Up'),
-              )
-            ],
+            ),
           ),
-        ),
+          Container(
+            color: Colors.black.withOpacity(0.5),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Sign Up, Magician!',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: 'DancingScript',
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      TextField(
+                        controller: _name,
+                        decoration: InputDecoration(
+                          labelText: 'Full Name',
+                          hintText: 'Enter your full name',
+                          prefixIcon: Icon(Icons.person, color: Colors.white),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white.withOpacity(0.1),
+                          hintStyle: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      TextField(
+                        controller: _email,
+                        decoration: InputDecoration(
+                          labelText: 'Magical Email',
+                          hintText: 'Enter your magical email',
+                          prefixIcon: Icon(Icons.email, color: Colors.white),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white.withOpacity(0.1),
+                          hintStyle: TextStyle(color: Colors.white),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      SizedBox(height: 20),
+                      TextField(
+                        controller: _password,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: 'Cast Your Spell (Password)',
+                          hintText: 'Enter your magical password',
+                          prefixIcon: Icon(Icons.lock, color: Colors.white),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          filled: true,
+                          focusColor: Colors.white,
+
+                          fillColor: Colors.white.withOpacity(0.1),
+                          hintStyle: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      if (errorMessage.isNotEmpty)
+                        Text(
+                          errorMessage,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _signUp,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: Colors.purple,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: Text('Sign Up'),
+                      ),
+                      //login button
+                      SizedBox(height: 20),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context,
+                          MaterialPageRoute(builder: (_) => LoginPage()),
+                        ),
+                        child: Text(
+                          'Already have an account? Login',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+
+
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

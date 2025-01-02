@@ -10,17 +10,38 @@ class AnnPage extends StatefulWidget {
   AnnPageState createState() => AnnPageState();
 }
 
-class AnnPageState extends State<AnnPage> {
-  Uint8List? _imageBytes; // For storing image bytes
+class AnnPageState extends State<AnnPage> with SingleTickerProviderStateMixin {
+  Uint8List? _imageBytes;
   String _classificationResult = 'No result yet';
   final ImagePicker _picker = ImagePicker();
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickImage() async {
     final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
       setState(() {
-        _imageBytes = bytes; // Store the image as bytes
+        _imageBytes = bytes;
+        _controller.forward().then((_) => _controller.reverse());
       });
     }
   }
@@ -73,75 +94,95 @@ class AnnPageState extends State<AnnPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ANN Image Classification'),
-        backgroundColor: Colors.deepPurple.shade300, // Consistent color palette
+        backgroundColor: Colors.deepPurple.shade300,
         elevation: 5,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _imageBytes != null
-                  ? ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.memory(
-                  _imageBytes!,
-                  width: 250,
-                  height: 250,
-                  fit: BoxFit.cover,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.purple, Colors.deepPurpleAccent],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedBuilder(
+                  animation: _scaleAnimation,
+                  builder: (context, child) {
+                    return Transform.scale(
+                      scale: _scaleAnimation.value,
+                      child: _imageBytes != null
+                          ? ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.memory(
+                          _imageBytes!,
+                          width: 250,
+                          height: 250,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                          : const Icon(Icons.image, size: 200, color: Colors.grey),
+                    );
+                  },
                 ),
-              )
-                  : const Icon(Icons.image, size: 200, color: Colors.grey),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              // Creative Classification result in circular container
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.deepPurple.shade50,
-                  shape: BoxShape.circle,
-                  boxShadow: [BoxShadow(blurRadius: 6, color: Colors.black26)],
-                ),
-                child: Text(
-                  _classificationResult,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: _pickImage,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink.shade100,
-                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 30),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  child: Container(
+                    key: ValueKey<String>(_classificationResult),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurple.shade50,
+                      shape: BoxShape.circle,
+                      boxShadow: [BoxShadow(blurRadius: 6, color: Colors.black26)],
                     ),
-                    child: const Text('Pick Image', style: TextStyle(fontSize: 16)),
-                  ),
-                  const SizedBox(width: 20),
-                  ElevatedButton(
-                    onPressed: _uploadAndClassify,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple.shade200,
-                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 30),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Text(
+                      _classificationResult,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
                     ),
-                    child: const Text('Classify Image', style: TextStyle(fontSize: 16)),
                   ),
-                ],
-              ),
-            ],
+                ),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _pickImage,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pink.shade100,
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 30),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Text('Pick Image', style: TextStyle(fontSize: 16)),
+                    ),
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: _uploadAndClassify,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.purple.shade200,
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 30),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Text('Classify Image', style: TextStyle(fontSize: 16)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

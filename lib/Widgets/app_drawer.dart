@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../pages/profile_page.dart';
 import '../pages/stock.dart';
 import '../pages/voice_recognition_page.dart';
 import '../pages/cnn_page.dart';
 import '../pages/ann_page.dart';
 import '../pages/settings_page.dart';
+import '../pages/login_page.dart'; // Import the login page
 
 class AppDrawer extends StatelessWidget {
   final String name;
@@ -20,10 +22,7 @@ class AppDrawer extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.deepPurple.shade50,
-              Colors.white,
-            ],
+            colors: [Colors.purple, Colors.black],
           ),
         ),
         child: Column(
@@ -32,9 +31,9 @@ class AppDrawer extends StatelessWidget {
               padding: const EdgeInsets.only(top: 50, bottom: 20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.deepPurple.shade400, Colors.purple.shade200],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                  colors: [Colors.purple, Colors.black],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
                 borderRadius: const BorderRadius.only(
                   bottomRight: Radius.circular(50),
@@ -42,7 +41,7 @@ class AppDrawer extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.deepPurple.withOpacity(0.3),
+                    color: Colors.black.withOpacity(0.3),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -65,7 +64,7 @@ class AppDrawer extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 45,
                       backgroundColor: Colors.white,
-                      child: Icon(Icons.person, size: 50, color: Colors.deepPurple.shade400),
+                      child: Icon(Icons.person, size: 50, color: Colors.purple),
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -152,6 +151,13 @@ class AppDrawer extends StatelessWidget {
                     color: Colors.grey,
                     onTap: () => _navigateTo(context, SettingsPage()),
                   ),
+                  _buildListTile(
+                    context,
+                    icon: Icons.logout,
+                    title: "Logout",
+                    color: Colors.red,
+                    onTap: () => _logout(context),
+                  ),
                 ],
               ),
             ),
@@ -183,11 +189,9 @@ class AppDrawer extends StatelessWidget {
         ),
         title: Text(
           title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
         ),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey.shade600),
         onTap: onTap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
@@ -215,11 +219,11 @@ class AppDrawer extends StatelessWidget {
         ),
         title: Text(
           title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
         ),
         subtitle: Text(
           subtitle,
-          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.7)),
         ),
         children: children,
       ),
@@ -231,17 +235,23 @@ class AppDrawer extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      contentPadding: const EdgeInsets.only(left: 72, right: 16),
       title: Text(
         title,
-        style: const TextStyle(fontSize: 15),
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white),
       ),
       onTap: onTap,
     );
   }
 
   void _navigateTo(BuildContext context, Widget page) {
-    Navigator.pop(context);
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
   }
 }

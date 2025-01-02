@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project/pages/home_page.dart';
 import 'package:flutter_project/pages/login_page.dart';
 
 
@@ -20,21 +21,40 @@ void main() async {
     await Firebase.initializeApp();
   }
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'AI Hub',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.deepPurple,
+        scaffoldBackgroundColor: Colors.deepPurple.shade50,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.deepPurple.shade300,
+          elevation: 5,
+          titleTextStyle: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        textTheme: TextTheme(
+          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          bodyLarge: TextStyle(fontSize: 16, color: Colors.black87),
+          bodyMedium: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.deepPurple.shade300,
+          textTheme: ButtonTextTheme.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
       ),
-      home:  LoginPage(), // Set LoginPage as the home
+      home: HomePage(name: 'Guest User', email: 'guest@example.com'),
     );
   }
 }

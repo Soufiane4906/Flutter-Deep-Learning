@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_page.dart';
+import 'sign_up_page.dart'; // Import the sign-up page
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -74,9 +75,14 @@ class _LoginPageState extends State<LoginPage> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/starryNight.jpg',
-              fit: BoxFit.cover,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.purple, Colors.black],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
             ),
           ),
           Container(
@@ -104,32 +110,41 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           labelText: 'Magical Email',
                           hintText: 'Enter your magical email',
-                          hintStyle: TextStyle(color: Colors.white),
-                          prefixIcon: Icon(Icons.email, color: Colors.white),
+                          hintStyle: TextStyle(color: Colors.purple),
+                          //hint color
+                          prefixIcon: Icon(Icons.email, color: Colors.purple),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide(color: Colors.white),
                           ),
                           filled: true,
-                          fillColor: Colors.white.withOpacity(0.1),
+                          iconColor: Colors.purple,
+
+                          focusColor: Colors.white,
+                          fillColor: Colors.white,
                         ),
+                        cursorColor: Colors.white,
+
                       ),
                       SizedBox(height: 20),
                       TextField(
                         controller: _passwordController,
                         obscureText: true,
+
                         decoration: InputDecoration(
                           labelText: 'Cast Your Spell (Password)',
                           hintText: 'Enter your magical password',
-                          hintStyle: TextStyle(color: Colors.white),
-                          prefixIcon: Icon(Icons.lock, color: Colors.white),
+                          prefixIcon: Icon(Icons.email, color: Colors.purple),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide(color: Colors.white),
                           ),
+                          focusColor: Colors.white,
+                          fillColor: Colors.white,
                           filled: true,
-                          fillColor: Colors.white.withOpacity(0.1),
+                          hintStyle: TextStyle(color: Colors.purple.shade200),
                         ),
+
                       ),
                       SizedBox(height: 20),
                       if (_errorMessage.isNotEmpty)
@@ -141,12 +156,25 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                         onPressed: _login,
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.black, backgroundColor: Colors.white,
+                          foregroundColor: Colors.white, backgroundColor: Colors.purple,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
                         child: Text('Login'),
+                      ),
+                      SizedBox(height: 20),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SignUpPage()),
+                          );
+                        },
+                        child: Text(
+                          'Don\'t have an account? Sign up',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   ),

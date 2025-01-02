@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import '../widgets/app_drawer.dart';
 import '../pages/voice_recognition_page.dart';
 import '../pages/stock.dart';
@@ -11,6 +16,15 @@ class HomePage extends StatelessWidget {
   final String email;
 
   const HomePage({super.key, required this.name, required this.email});
+
+  void _openPdfViewer(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PDFViewerPage(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +70,15 @@ class HomePage extends StatelessWidget {
                         fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87,
                       )),
                       const SizedBox(height: 20),
-                      _buildInfoCard(),
+                      ElevatedButton(
+                        onPressed: () => _openPdfViewer(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: const Text('View Tutorial', style: TextStyle(fontSize: 16, color: Colors.white)),
+                      ),
                     ],
                   ),
                 ),
@@ -92,134 +114,114 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(
-          color: Colors.grey.withOpacity(0.1),
-          blurRadius: 10,
-          offset: const Offset(0, 5),
-        )],
-      ),
-      child: Column(
-        children: [
-          const Text("Project Structure", style: TextStyle(
-            fontSize: 24, fontWeight: FontWeight.bold, color: Colors.deepPurple,
-          )),
-          const SizedBox(height: 20),
-          _buildSection("Models", [
-            "• cnn_model.tflite",
-            "• stock_prediction_model.tflite",
-            "• labels.txt"
-          ]),
-          _buildSection("Backend", [
-            "• Flask Backend",
-            "• app.py, stock.py",
-            "• Python 3.12"
-          ]),
-          _buildSection("Frontend Pages", [
-            "• ann_page.dart",
-            "• cnn_page.dart",
-            "• home_page.dart",
-            "• login_page.dart",
-            "• profile_page.dart",
-            "• rag_page.dart",
-            "• settings_page.dart",
-            "• stock.dart",
-            "• voice_recognition_page.dart"
-          ]),
-          _buildSection("Classification Labels", [
-            "0. Apple",
-            "1. Banana",
-            "2. Avocado",
-            "3. Cherry",
-            "4. Kiwi",
-            "5. Mango",
-            "6. Orange",
-            "8. Strawberries",
-            "9. Watermelon"
-          ]),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSection(String title, List<String> items) {
-    return Column(
-      children: [
-        Text(title, style: const TextStyle(
-          fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87,
-        )),
-        const SizedBox(height: 10),
-        ...items.map((item) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Text(item, style: TextStyle(
-            fontSize: 14, color: Colors.grey.shade700,
-          ), textAlign: TextAlign.center),
-        )).toList(),
-        const SizedBox(height: 20),
-      ],
-    );
-  }
-
   Widget _buildFeatureCard(BuildContext context, String title, String description,
       IconData icon, Color color, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(
-            color: color.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          )],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              splashColor: color.withOpacity(0.1),
-              highlightColor: color.withOpacity(0.05),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: color.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Icon(icon, size: 30, color: color),
+    return StatefulBuilder(
+      builder: (context, setState) {
+        bool isHovered = false;
+
+        return MouseRegion(
+          onEnter: (_) => setState(() => isHovered = true),
+          onExit: (_) => setState(() => isHovered = false),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+              color: isHovered ? color.withOpacity(0.2) : Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onTap,
+                  splashColor: color.withOpacity(0.1),
+                  highlightColor: color.withOpacity(0.05),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: color.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Icon(icon, size: 30, color: color),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                            textAlign: TextAlign.center),
+                        const SizedBox(height: 6),
+                        Text(description,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                            textAlign: TextAlign.center),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    Text(title, style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87,
-                    ), textAlign: TextAlign.center),
-                    const SizedBox(height: 6),
-                    Text(description, style: TextStyle(
-                      fontSize: 12, color: Colors.grey.shade600,
-                    ), textAlign: TextAlign.center),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   void _navigateTo(BuildContext context, Widget page) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  }
+}
+
+class PDFViewerPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tutorial PDF'),
+        backgroundColor: Colors.deepPurple.shade300,
+      ),
+      body: FutureBuilder<String>(
+        future: _loadPdfFromAssets(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error loading PDF: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            return PDFView(
+              filePath: snapshot.data!,
+            );
+          } else {
+            return const Center(child: Text('No PDF found.'));
+          }
+        },
+      ),
+    );
+  }
+
+  Future<String> _loadPdfFromAssets() async {
+    final ByteData bytes = await rootBundle.load('assets/tuto.pdf');
+    final String dir = (await getTemporaryDirectory()).path;
+    final String filePath = '$dir/tuto.pdf';
+    final File file = File(filePath);
+    await file.writeAsBytes(bytes.buffer.asUint8List());
+    return filePath;
   }
 }
