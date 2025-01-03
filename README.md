@@ -32,7 +32,7 @@ Bienvenue dans l'univers du **Flutter Deep Learning App** ! Une plateforme novat
 ### **Moteur IA en Action**
 - **TensorFlow Lite** : Intégration locale des modèles d'IA pour une exécution rapide et efficace.
 - **Prédictions de Stock** : Modèle unique pour prévoir les tendances futures.
-- **Classification Avancée** : Détection précise des données via des réseaux convolutifs.
+- **Classification Avancée** : Détection précise des données via des réseaux convolutifs .
 
 ---
 
@@ -40,8 +40,7 @@ Bienvenue dans l'univers du **Flutter Deep Learning App** ! Une plateforme novat
 - **Technologies Clés** : 
   - Flutter pour la mobilité
   - Flask pour les services backend
-  - Bases de données locales comme SQLite/Hive
-- **Outils DevOps** : Hot Reload, tests unitaires et intégration continue pour une livraison fiable.
+  - 
 
 ---
 
@@ -55,7 +54,7 @@ Bienvenue dans l'univers du **Flutter Deep Learning App** ! Une plateforme novat
 2. Assurez-vous d'avoir installé Flask :
     ```bash
     pip install flask
-    pip install flask-restful
+    pip install tensorflow 
     ```
 3. Positionnez-vous sur les fichiers principaux (`app.py` ou `stock.py`) :
     ```bash
